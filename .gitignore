@@ -25,3 +25,4 @@ replay_pid*
 /target/
 /.vault-token
 /.idea/sonarlint/
+.idea/dataSources.xml

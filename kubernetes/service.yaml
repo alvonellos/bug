@@ -11,5 +11,5 @@ spec:
   loadBalancerIP: 192.168.0.77
   ports:
     - port: 80 #Service port
-      targetPort: 8080
+      targetPort: 8085
       protocol: TCP #The port for the container
