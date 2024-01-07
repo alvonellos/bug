@@ -7,8 +7,8 @@ spec:
     app: bug
   type: LoadBalancer #Type of the Kubernetes Service
   externalIPs:
-    - 192.168.0.77
-  loadBalancerIP: 192.168.0.77
+    - 192.168.0.75
+  loadBalancerIP: 192.168.0.75
   ports:
     - port: 80 #Service port
       targetPort: 8085
