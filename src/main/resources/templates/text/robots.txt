@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /private
+Disallow: /secret
+Disallow: /admin
+Disallow: /statistics
+
+Sitemap: ${sitemapUrl}

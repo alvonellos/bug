@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortune Teller</title>
+</head>
+<body>
+
+<h1>Fortune Teller</h1>
+
+<!-- Displaying the current bug -->
+<div th:if="${fortune != null}" class="fortune-message">
+    <p th:text="${fortune}"></p>
+</div>
+
+<!-- Form to submit a new bug -->
+<form action="/api/fortune" method="post">
+    <label for="fortuneInput">Enter your fortune:</label>
+    <input type="text" id="fortuneInput" name="fortune" required>
+    <button type="submit">Generate Fortune</button>
+</form>
+
+</body>
+</html>
