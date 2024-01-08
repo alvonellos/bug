@@ -12,7 +12,7 @@ import java.lang.annotation.*;
 @Component
 @RequestMapping("/api")
 //@CrossOrigin(allowedHeaders = "*", origins = "*")
-//look so we could uncomment this and then it would work,
+//look so we could uncomment this, and then it would work,
 //but check out how I did it in WebMvcConfig. Slick to do it globally.
 public @interface ApiPrefixController {
     @AliasFor(annotation = Component.class)
