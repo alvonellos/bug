@@ -52,7 +52,7 @@ public class KVController {
      * @return all records in the database.
      */
     @GetMapping("kv")
-    public ResponseEntity<List<KV>> getAll() {
+    public ResponseEntity<List<KVDTO>> getAll() {
         log.entering(this.getClass().getName(), "getAll");
         val result = kvService.findAll();
         log.exiting(this.getClass().getName(), "getAll", result);
@@ -64,9 +64,9 @@ public class KVController {
      * @return all records in the database, paginated.
      */
     @GetMapping("kv/{size}/{page}")
-    public ResponseEntity<Page<KV>> getAll(HttpServletRequest request, @PathVariable int size, @PathVariable int page) throws WebsiteAPIException {
+    public ResponseEntity<Page<KVDTO>> getAll(HttpServletRequest request, @PathVariable int size, @PathVariable int page) throws WebsiteAPIException {
         log.entering(this.getClass().getName(), String.format("getAll(%d, %d)", page, size));
-        val result = kvService.getAll(page, size);
+        val result = kvService.findAll(page, size);
         log.exiting(this.getClass().getName(), String.format("getAll(%d, %d) = %d", page, size, (int) result.stream().count()));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -76,7 +76,7 @@ public class KVController {
      * @return all records in the database
      */
     @GetMapping("kv/search")
-    public ResponseEntity<List<KV>> searchByKey(HttpServletRequest request, @RequestParam String key) throws WebsiteAPIException {
+    public ResponseEntity<List<KVDTO>> searchByKey(HttpServletRequest request, @RequestParam String key) throws WebsiteAPIException {
         log.entering(this.getClass().getName(), "searchByKey", key);
         val result = kvService.searchByKey(key);
         log.exiting(this.getClass().getName(), "searchByKey", result);
@@ -119,7 +119,7 @@ public class KVController {
      */
     @PutMapping("kv/{id}")
     // Could use @PutMapping instead, but this is more explicit.
-    public ResponseEntity<Void> put(@RequestParam("id") Long id, @RequestBody @Valid KV kv) throws WebsiteAPIException {
+    public ResponseEntity<Void> put(@RequestParam("id") Long id, @RequestBody @Valid KVDTO kv) throws WebsiteAPIException {
         log.entering(this.getClass().getName(), "put", kv);
         kvService.put(kv);
         log.exiting(this.getClass().getName(), "put");

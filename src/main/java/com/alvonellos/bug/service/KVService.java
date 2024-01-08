@@ -5,7 +5,7 @@ import com.alvonellos.bug.error.exceptions.WebsiteAPIException;
 import com.alvonellos.bug.error.exceptions.WebsiteIdNotFoundException;
 import com.alvonellos.bug.error.exceptions.WebsiteIllegalArgumentException;
 import com.alvonellos.bug.repo.dao.KVEntity;
-import com.alvonellos.website.repository.KVDatabase;
+import com.alvonellos.bug.repo.KVDatabase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,7 +47,7 @@ public class KVService {
         return result.getKVEntityId().longValue();
     }
 
-    public com.alvonellos.website.dto.KVDTO put(com.alvonellos.website.dto.KVDTO KVDTO) throws WebsiteAPIException {
+    public KVDTO put(KVDTO KVDTO) throws WebsiteAPIException {
         log.entering(this.getClass().getName(), "put", KVDTO);
         val result = kvDatabase
                 .findById(KVDTO.getId())
@@ -58,7 +58,7 @@ public class KVService {
                 })
                 .orElseThrow(() -> new WebsiteIdNotFoundException(KVDTO.getId()));
         log.exiting(this.getClass().getName(), "post", result);
-        return new com.alvonellos.website.dto.KVDTO(result);
+        return new KVDTO(result);
     }
 
     public void delete(Long id) {
@@ -67,15 +67,15 @@ public class KVService {
         log.exiting(this.getClass().getName(), "delete");
     }
 
-    public List<com.alvonellos.website.dto.KVDTO> findAll() {
+    public List<KVDTO> findAll() {
         return kvDatabase
                 .findAll()
                 .stream()
-                .map(com.alvonellos.website.dto.KVDTO::new)
+                .map(KVDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public List<com.alvonellos.website.dto.KVDTO> searchByKey(String key) {
+    public List<KVDTO> searchByKey(String key) {
         KVEntity kvEntity = new KVEntity(null, key, null);
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withMatcher("key", ExampleMatcher.GenericPropertyMatcher::contains)
@@ -84,16 +84,16 @@ public class KVService {
         return kvDatabase
                 .findAll(example)
                 .stream()
-                .map(com.alvonellos.website.dto.KVDTO::new)
+                .map(KVDTO::new)
                 .collect(Collectors.toList());
     }
 
-    public Page<com.alvonellos.website.dto.KVDTO> findAll(int page, int size) {
+    public Page<KVDTO> findAll(int page, int size) {
         log.entering(this.getClass().getName(), "findAll", String.format("%d %d", page, size));
 
         Page<KVEntity> entityPage = kvDatabase.findAll(PageRequest.of(page, size));
-        List<com.alvonellos.website.dto.KVDTO> dtos = entityPage.getContent().stream()
-                .map(com.alvonellos.website.dto.KVDTO::new)
+        List<KVDTO> dtos = entityPage.getContent().stream()
+                .map(KVDTO::new)
                 .collect(Collectors.toList());
         log.exiting(this.getClass().getName(), "findAll", dtos.size());
         return new PageImpl<>(dtos, entityPage.getPageable(), entityPage.getTotalElements());
@@ -109,16 +109,16 @@ public class KVService {
         return keys;
     }
 
-    private com.alvonellos.website.dto.KVDTO applyPatchToKV(
-            JsonPatch patch, com.alvonellos.website.dto.KVDTO target) throws JsonPatchException, JsonProcessingException {
+    private KVDTO applyPatchToKV(
+            JsonPatch patch, KVDTO target) throws JsonPatchException, JsonProcessingException {
         JsonNode patched = patch.apply(objectMapper.convertValue(target, JsonNode.class));
-        return objectMapper.treeToValue(patched, com.alvonellos.website.dto.KVDTO.class);
+        return objectMapper.treeToValue(patched, KVDTO.class);
     }
-    public com.alvonellos.website.dto.KVDTO patch(Long id, JsonPatch patch) throws WebsiteAPIException {
+    public KVDTO patch(Long id, JsonPatch patch) throws WebsiteAPIException {
         log.entering(this.getClass().getName(), "patch", id);
         try {
-            com.alvonellos.website.dto.KVDTO KVDTO = get(id);
-            com.alvonellos.website.dto.KVDTO KVDTOPatched = applyPatchToKV(patch, KVDTO);
+            KVDTO KVDTO = get(id);
+            KVDTO KVDTOPatched = applyPatchToKV(patch, KVDTO);
             KVDTOPatched.setId(id);
             put(KVDTOPatched);
             return KVDTOPatched;

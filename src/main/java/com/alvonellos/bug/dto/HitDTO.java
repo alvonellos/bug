@@ -1,6 +1,7 @@
 package com.alvonellos.bug.dto;
 
 import com.alvonellos.bug.repo.dao.HitEntity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class HitDTO {
 
     private final UUID id;
@@ -16,6 +18,8 @@ public class HitDTO {
     private final String url;
 
     private final String method;
+
+    private final String host;
 
     private final String ip;
 
@@ -29,6 +33,7 @@ public class HitDTO {
         this.id = hitEntity.getId();
         this.url = hitEntity.getUrl();
         this.method = hitEntity.getMethod();
+        this.host = hitEntity.getHost();
         this.ip = hitEntity.getIp();
         this.userAgent = hitEntity.getUserAgent();
         this.referer = hitEntity.getReferer();

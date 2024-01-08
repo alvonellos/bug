@@ -1,6 +1,6 @@
-package com.alvonellos.website.repository;
+package com.alvonellos.bug.repo;
 
-import com.alvonellos.website.model.KVEntity;
+import com.alvonellos.bug.repo.dao.KVEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

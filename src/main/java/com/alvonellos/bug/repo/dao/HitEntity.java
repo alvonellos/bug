@@ -27,6 +27,9 @@ public class HitEntity {
     @Column(name = "method")
     private String method;
 
+    @Column(name = "host")
+    private String host;
+
     @Column(name = "ip")
     private String ip;
 
