@@ -2,11 +2,19 @@ package com.alvonellos.bug.controller.api;
 
 import com.alvonellos.bug.dto.HitDTO;
 import com.alvonellos.bug.service.HitService;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,6 +31,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Slf4j
+@AutoConfigureTestDatabase
 class HitControllerTest {
 
     private MockMvc mockMvc;
@@ -35,6 +45,7 @@ class HitControllerTest {
 
     @BeforeEach
     void setUp() {
+        log.info("HitControllerTest.setUp()");
         MockitoAnnotations.initMocks(this);
         clock = Clock.systemDefaultZone();
         hitController = new HitController(hitService, clock);
@@ -43,6 +54,7 @@ class HitControllerTest {
 
     @Test
     void getAll() throws Exception {
+        log.info("HitControllerTest.getAll()");
         List<HitDTO> hits = new ArrayList<>();
         hits.add(new HitDTO(UUID.randomUUID(), "/test1", "GET", "localhost", "127.0.0.1", "user-agent", null, false, LocalDateTime.now(clock)));
         hits.add(new HitDTO(UUID.randomUUID(), "/test2", "POST", "localhost", "127.0.0.1", "user-agent", null, false, LocalDateTime.now(clock)));
@@ -58,6 +70,7 @@ class HitControllerTest {
 
     @Test
     void get() throws Exception {
+        log.info("HitControllerTest.get()");
         UUID id = UUID.randomUUID();
         HitDTO hit = new HitDTO(id, "/test", "GET", "localhost", "127.0.0.1", "user-agent", null, false, LocalDateTime.now(clock));
 
@@ -71,15 +84,17 @@ class HitControllerTest {
 
     @Test
     void hit() throws Exception {
+        log.info("HitControllerTest.hit()");
         when(hitService.register(any(HitDTO.class))).thenReturn(UUID.randomUUID());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/hit/" + UUID.randomUUID()))
-                .andExpect(status().isOk())
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/hit"))
+                .andExpect(status().isCreated())
                 .andReturn();
     }
 
     @Test
     void getBug() throws Exception {
+        log.info("HitControllerTest.getBug()");
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/hit/bug.jpg"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.IMAGE_JPEG_VALUE))
@@ -97,6 +112,7 @@ class HitControllerTest {
 
     @Test
     void count() throws Exception {
+        log.info("HitControllerTest.count()");
         when(hitService.count()).thenReturn(10L);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/count"))
@@ -107,6 +123,8 @@ class HitControllerTest {
 
     @Test
     void clear() throws Exception {
+        log.info("HitControllerTest.clear()");
+
         mockMvc.perform(MockMvcRequestBuilders.get("/api/clear"))
                 .andExpect(status().isOk());
 

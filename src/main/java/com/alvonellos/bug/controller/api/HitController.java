@@ -54,7 +54,7 @@ public class HitController {
 
     @GetMapping(value = "hit", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<URI> hit(HttpServletRequest request) {
-        log.entering(this.getClass().getName(), "post", request);
+        log.entering(this.getClass().getName(), "hit", request);
 
         final UUID id = hitService.register(
                 HitDTO.builder()
