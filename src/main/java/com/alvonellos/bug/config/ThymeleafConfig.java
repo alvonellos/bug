@@ -1,4 +1,4 @@
-package com.alvonellos.website.config;
+package com.alvonellos.bug.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,6 @@ public class ThymeleafConfig {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.addTemplateResolver(htmlTemplateResolver());
         templateEngine.addTemplateResolver(textTemplateResolver());
-        templateEngine.addTemplateResolver(javaTemplateResolver());
         return templateEngine;
     }
 
@@ -40,15 +39,5 @@ public class ThymeleafConfig {
         textTemplateResolver.setTemplateMode(TemplateMode.TEXT);
         textTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
         return textTemplateResolver;
-    }
-
-    @Bean
-    public SpringResourceTemplateResolver javaTemplateResolver() {
-        SpringResourceTemplateResolver javaTemplateResolver = new SpringResourceTemplateResolver();
-        javaTemplateResolver.setPrefix(CLASSPATH_TEMPLATES);
-        javaTemplateResolver.setSuffix(".java");
-        javaTemplateResolver.setTemplateMode(TemplateMode.TEXT);
-        javaTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        return javaTemplateResolver;
     }
 }

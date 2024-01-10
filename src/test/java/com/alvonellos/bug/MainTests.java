@@ -17,6 +17,7 @@ class MainTests {
 	Environment env;
 	@Test
 	void contextLoads() {
+		assert(env != null);
 		assert(env.getProperty("spring.cloud.vault.enabled")!= null);
 	}
 

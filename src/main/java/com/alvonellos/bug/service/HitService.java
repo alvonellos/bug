@@ -5,10 +5,8 @@ import com.alvonellos.bug.repo.HitRepository;
 import com.alvonellos.bug.repo.dao.HitEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +30,7 @@ public class HitService {
         final List<HitDTO> dtos = hitRepository.findAll(
                 PageRequest
                     .of(0,
-                            (int) (hitRepository.count() - 1),
+                            (hitRepository.count().intValue()),
                             Sort.by(Sort.Direction.ASC, "accessed")
                     )
         ).stream()
@@ -52,10 +50,11 @@ public class HitService {
         return new HitDTO(hitEntity);
     }
 
-    public Page<HitDTO> get(@NotNull Pageable pageable) {
-        log.trace(String.format("get(%s)", pageable));
+    public Page<HitDTO> get(int pageNumber, int pageSize, Sort.Direction direction) {
+        log.trace(String.format("get(%s, %s, %s)", pageNumber, pageSize, direction));
 
-        final Page<HitEntity> hits = hitRepository.findAll(pageable);
+        final Page<HitEntity> hits = hitRepository
+                .findAll(PageRequest.of(pageNumber, pageSize, direction, "accessed"));
 
         log.trace("get hits " + hits);
         return hits.map(HitDTO::new);

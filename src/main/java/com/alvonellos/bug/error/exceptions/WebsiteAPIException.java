@@ -2,11 +2,11 @@ package com.alvonellos.bug.error.exceptions;
 
 
 public abstract class WebsiteAPIException extends Exception {
-    public WebsiteAPIException(String message) {
+    protected WebsiteAPIException(String message) {
         super(message);
     }
 
-    public WebsiteAPIException(String message, Exception cause) {
+    protected WebsiteAPIException(String message, Exception cause) {
         super(message, cause);
     }
 }
