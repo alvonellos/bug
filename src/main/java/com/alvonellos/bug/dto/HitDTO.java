@@ -8,13 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
-import jakarta.servlet.http.Cookie;
 @Data
 @Builder
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonInclude
 public class HitDTO {
 
     @JsonProperty("id")
