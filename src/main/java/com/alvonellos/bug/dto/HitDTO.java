@@ -1,6 +1,8 @@
 package com.alvonellos.bug.dto;
 
 import com.alvonellos.bug.repo.dao.HitEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,24 +14,34 @@ import jakarta.servlet.http.Cookie;
 @Data
 @Builder
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class HitDTO {
 
+    @JsonProperty("id")
     private final UUID id;
 
+    @JsonProperty("url")
     private final String url;
 
+    @JsonProperty("method")
     private final String method;
 
+    @JsonProperty("host")
     private final String host;
 
+    @JsonProperty("ip")
     private final String ip;
 
+    @JsonProperty("userAgent")
     private final String userAgent;
 
+    @JsonProperty("referer")
     private final String referer;
 
-    private final List<Cookie> cookies;
+    @JsonProperty("isPixelHit")
+    private final Boolean isPixelHit;
 
+    @JsonProperty("accessed")
     private final LocalDateTime accessed;
 
     public HitDTO(HitEntity hitEntity) {
@@ -40,7 +52,7 @@ public class HitDTO {
         this.ip = hitEntity.getIp();
         this.userAgent = hitEntity.getUserAgent();
         this.referer = hitEntity.getReferer();
+        this.isPixelHit = hitEntity.getIsPixelHit();
         this.accessed = hitEntity.getAccessed();
-        this.cookies = hitEntity.getCookies();
     }
 }

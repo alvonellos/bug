@@ -1,6 +1,7 @@
 package com.alvonellos.bug.annotations;
 
 import org.springframework.core.annotation.AliasFor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Component
-@RequestMapping("/api")
+@RequestMapping(value = "/api")
 //@CrossOrigin(allowedHeaders = "*", origins = "*")
 //look so we could uncomment this, and then it would work,
 //but check out how I did it in WebMvcConfig. Slick to do it globally.

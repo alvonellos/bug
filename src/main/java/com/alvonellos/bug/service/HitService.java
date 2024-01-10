@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -33,7 +34,7 @@ public class HitService {
                             Sort.by(Sort.Direction.ASC, "accessed")
                     )
         ).stream()
-                .map(hitEntity -> new HitDTO(hitEntity, cookies))
+                .map(HitDTO::new)
                 .toList();
 
         log.trace("findAll returned " + dtos.size());
@@ -46,7 +47,7 @@ public class HitService {
         final HitEntity hitEntity = hitRepository.findById(id).orElseThrow();
 
         log.trace("get hit " + hitEntity.getId());
-        return new HitDTO(hitEntity, cookies);
+        return new HitDTO(hitEntity);
     }
 
     public Page<HitDTO> get(@NotNull Pageable pageable) {
@@ -55,7 +56,7 @@ public class HitService {
         final Page<HitEntity> hits = hitRepository.findAll(pageable);
 
         log.trace("get hits " + hits);
-        return hits.map(hitEntity -> new HitDTO(hitEntity, cookies));
+        return hits.map(HitDTO::new);
     }
 
     public Long count() {
@@ -67,13 +68,22 @@ public class HitService {
         return count;
     }
 
-    public UUID post(HitDTO build) {
-        log.trace("post(build)");
+    public UUID register(HitDTO build) {
+        log.trace("register(build)");
 
         final HitEntity hitEntity = new HitEntity(build);
+        hitEntity.setId(UUID.randomUUID());
         hitRepository.save(hitEntity);
 
         log.trace("post saved " + hitEntity);
         return hitEntity.getId();
+    }
+
+    public void clear() {
+        log.trace("clear()");
+
+        hitRepository.deleteAll();
+
+        log.trace("clear deleted all hits");
     }
 }

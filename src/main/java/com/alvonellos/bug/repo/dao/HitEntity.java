@@ -39,8 +39,6 @@ public class HitEntity {
     @Column(name = "referer")
     private String referer;
 
-    @Column(name = "cookies")
-    private String cookies;
 
     @Column(name = "isPixelHit", nullable = false)
     private Boolean isPixelHit = false;
@@ -50,10 +48,14 @@ public class HitEntity {
     private LocalDateTime accessed = LocalDateTime.now();
 
     public HitEntity(HitDTO hitDTO) {
+        this.id = hitDTO.getId();
         this.url = hitDTO.getUrl();
         this.method = hitDTO.getMethod();
+        this.host = hitDTO.getHost();
         this.ip = hitDTO.getIp();
         this.userAgent = hitDTO.getUserAgent();
         this.referer = hitDTO.getReferer();
+        this.isPixelHit = hitDTO.getIsPixelHit();
+        this.accessed = hitDTO.getAccessed();
     }
 }

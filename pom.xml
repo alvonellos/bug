@@ -24,6 +24,7 @@
 		<json-patch.version>1.12</json-patch.version>
 		<jakarta.xml.bind-api.version>4.0.0</jakarta.xml.bind-api.version>
 		<logstash-gelf.version>1.15.1</logstash-gelf.version>
+		<jackson-datatype-jsr310.version>2.16.1</jackson-datatype-jsr310.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -77,6 +78,11 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
 			<version>${jackson-annotations.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${jackson-datatype-jsr310.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>

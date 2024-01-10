@@ -21,4 +21,6 @@ public interface HitRepository extends PagingAndSortingRepository<HitEntity, UUI
     void save(@NotNull HitEntity hitEntity);
 
     Optional<HitEntity> findById(UUID id);
+
+    void deleteAll();
 }

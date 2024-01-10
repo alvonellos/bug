@@ -4,6 +4,7 @@ import com.alvonellos.bug.annotations.ApiPrefixController;
 import com.alvonellos.bug.dto.HitDTO;
 import com.alvonellos.bug.service.HitService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.val;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.security.SecureRandom;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Log
 @ApiPrefixController
@@ -27,8 +30,9 @@ import java.util.UUID;
 public class HitController {
     private final HitService hitService;
 
+    private final Clock clock;
     private static final SecureRandom RANDOM = new SecureRandom();
-    @GetMapping("hits")
+    @GetMapping(value = "hits", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HitDTO>> getAll() {
         log.entering(this.getClass().getName(), "getAll");
 
@@ -48,30 +52,30 @@ public class HitController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("hit")
-    @DeleteMapping("hit")
-    @PutMapping("hit")
-    @GetMapping("hit")
+    @GetMapping(value = "hit", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<URI> hit(HttpServletRequest request) {
         log.entering(this.getClass().getName(), "post", request);
 
-        final UUID id = hitService.post(
+        final UUID id = hitService.register(
                 HitDTO.builder()
-                        .accessed(LocalDateTime.now())
-                        .userAgent(request.getRemoteUser())
-                        .method(HttpMethod.POST.toString())
+                        .id(UUID.randomUUID())
                         .url(request.getRequestURI())
+                        .method(HttpMethod.GET.toString())
                         .host(request.getRemoteHost())
-                        .ip(request.getRemoteAddr()).build()
-        );
+                        .ip(request.getRemoteAddr())
+                        .userAgent(request.getRemoteUser())
+                        .referer(request.getHeader("Referer"))
+                        .isPixelHit(false)
+                        .accessed(LocalDateTime.now(clock))
+                        .build());
 
         log.exiting(this.getClass().getName(), "post");
         return ResponseEntity.created(URI.create("/hit/" + id)).build();
     }
 
 
-    @GetMapping(value = "/hit/bug.gif", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<byte[]> getBug() {
+    @GetMapping(value = "hit/bug.*", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<byte[]> getBug(HttpServletRequest request, HttpServletResponse response) {
         log.entering(this.getClass().getName(), "getBug");
 
         //casting necessary because a byte in java is signed,
@@ -87,6 +91,39 @@ public class HitController {
         // Choosing a non-critical byte (you can experiment with different indices)
         pixel[13] = (byte) RANDOM.nextInt(0, 256);
 
+        final UUID hitId = hitService.register(HitDTO.builder()
+                .id(UUID.randomUUID())
+                .url(request.getRequestURI())
+                .method(HttpMethod.GET.toString())
+                .host(request.getRemoteHost())
+                .ip(request.getRemoteAddr())
+                .userAgent(request.getRemoteUser())
+                .referer(request.getHeader("Referer"))
+                .isPixelHit(true)
+                .accessed(LocalDateTime.now(clock))
+                .build());
+
+        response.setHeader("Location", "/hit/" + hitId);
+
         return new ResponseEntity<>(pixel, HttpStatus.OK);
+    }
+
+    @GetMapping("count")
+    public ResponseEntity<Long> count() {
+        log.entering(this.getClass().getName(), "count");
+
+        val result = hitService.count();
+
+        log.exiting(this.getClass().getName(), "count", result);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping("clear")
+    public void clear() {
+        log.entering(this.getClass().getName(), "clear");
+
+        hitService.clear();
+
+        log.exiting(this.getClass().getName(), "clear");
     }
 }
