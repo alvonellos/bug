@@ -6,8 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
-
+import jakarta.servlet.http.Cookie;
 @Data
 @Builder
 @AllArgsConstructor
@@ -27,6 +28,8 @@ public class HitDTO {
 
     private final String referer;
 
+    private final List<Cookie> cookies;
+
     private final LocalDateTime accessed;
 
     public HitDTO(HitEntity hitEntity) {
@@ -38,5 +41,6 @@ public class HitDTO {
         this.userAgent = hitEntity.getUserAgent();
         this.referer = hitEntity.getReferer();
         this.accessed = hitEntity.getAccessed();
+        this.cookies = hitEntity.getCookies();
     }
 }

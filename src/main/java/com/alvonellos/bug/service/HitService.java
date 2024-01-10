@@ -1,18 +1,16 @@
 package com.alvonellos.bug.service;
 
 import com.alvonellos.bug.dto.HitDTO;
-import com.alvonellos.bug.dto.KVDTO;
 import com.alvonellos.bug.repo.HitRepository;
 import com.alvonellos.bug.repo.dao.HitEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,11 +33,29 @@ public class HitService {
                             Sort.by(Sort.Direction.ASC, "accessed")
                     )
         ).stream()
-                .map(HitDTO::new)
+                .map(hitEntity -> new HitDTO(hitEntity, cookies))
                 .toList();
 
         log.trace("findAll returned " + dtos.size());
         return dtos;
+    }
+
+    public HitDTO get(UUID id) {
+        log.trace(String.format("get(%s)", id));
+
+        final HitEntity hitEntity = hitRepository.findById(id).orElseThrow();
+
+        log.trace("get hit " + hitEntity.getId());
+        return new HitDTO(hitEntity, cookies);
+    }
+
+    public Page<HitDTO> get(@NotNull Pageable pageable) {
+        log.trace(String.format("get(%s)", pageable));
+
+        final Page<HitEntity> hits = hitRepository.findAll(pageable);
+
+        log.trace("get hits " + hits);
+        return hits.map(hitEntity -> new HitDTO(hitEntity, cookies));
     }
 
     public Long count() {
@@ -49,5 +65,15 @@ public class HitService {
 
         log.trace("count returned " + count);
         return count;
+    }
+
+    public UUID post(HitDTO build) {
+        log.trace("post(build)");
+
+        final HitEntity hitEntity = new HitEntity(build);
+        hitRepository.save(hitEntity);
+
+        log.trace("post saved " + hitEntity);
+        return hitEntity.getId();
     }
 }

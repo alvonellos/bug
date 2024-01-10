@@ -39,6 +39,12 @@ public class HitEntity {
     @Column(name = "referer")
     private String referer;
 
+    @Column(name = "cookies")
+    private String cookies;
+
+    @Column(name = "isPixelHit", nullable = false)
+    private Boolean isPixelHit = false;
+
     @Column(name = "accessed", nullable = false)
     @Builder.Default
     private LocalDateTime accessed = LocalDateTime.now();
