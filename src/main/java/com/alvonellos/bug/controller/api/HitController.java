@@ -13,7 +13,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.security.SecureRandom;
@@ -21,7 +23,8 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+
+import static org.hibernate.internal.util.NullnessHelper.coalesce;
 
 @Log
 @ApiPrefixController
@@ -62,7 +65,7 @@ public class HitController {
                         .url(request.getRequestURI())
                         .method(HttpMethod.GET.toString())
                         .host(request.getRemoteHost())
-                        .ip(request.getRemoteAddr())
+                        .ip(request.getHeader("X-FORWARDED-FOR"))
                         .userAgent(request.getRemoteUser())
                         .referer(request.getHeader("Referer"))
                         .isPixelHit(false)
@@ -96,7 +99,7 @@ public class HitController {
                 .url(request.getRequestURI())
                 .method(HttpMethod.GET.toString())
                 .host(request.getRemoteHost())
-                .ip(request.getRemoteAddr())
+                .ip(coalesce(request.getHeader("X-FORWARDED-FOR"), request.getHeader("x-forwarded-for"), request.getHeader("X-Forwarded-For"), request.getHeader("X-Real-IP"), request.getRemoteAddr()))
                 .userAgent(request.getRemoteUser())
                 .referer(request.getHeader("Referer"))
                 .isPixelHit(true)
