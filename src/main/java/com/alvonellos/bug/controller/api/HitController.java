@@ -9,14 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.security.SecureRandom;
@@ -36,6 +35,21 @@ public class HitController {
 
     private final Clock clock;
     private static final SecureRandom RANDOM = new SecureRandom();
+
+
+    @GetMapping(value = "hits/paginated", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<HitDTO>> getPaginated(@RequestParam(defaultValue = "0") Integer page,
+                                                     @RequestParam(defaultValue = "10") Integer size,
+                                                     @RequestParam(defaultValue = "ASC") Sort.Direction direction) {
+        log.entering(this.getClass().getName(), "getPaginated",
+                String.format("page %d, size %d, sort %s", page, size, direction));
+
+        val result = hitService.get(page, size, direction);
+        log.exiting(this.getClass().getName(), "getPaginated", result);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @GetMapping(value = "hits", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<HitDTO>> getAll() {
         log.entering(this.getClass().getName(), "getAll");

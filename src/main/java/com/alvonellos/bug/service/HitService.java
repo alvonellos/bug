@@ -37,7 +37,7 @@ public class HitService {
                 .map(HitDTO::new)
                 .toList();
 
-        log.trace("findAll returned " + dtos.size());
+        log.trace("findAll returned {}", dtos.size());
         return dtos;
     }
 
@@ -56,7 +56,7 @@ public class HitService {
         final Page<HitEntity> hits = hitRepository
                 .findAll(PageRequest.of(pageNumber, pageSize, direction, "accessed"));
 
-        log.trace("get hits " + hits);
+        log.trace("get hits {}", hits);
         return hits.map(HitDTO::new);
     }
 
@@ -65,7 +65,7 @@ public class HitService {
 
         final Long count = hitRepository.count();
 
-        log.trace("count returned " + count);
+        log.trace("count returned {}", count);
         return count;
     }
 
@@ -76,7 +76,7 @@ public class HitService {
         hitEntity.setId(UUID.randomUUID());
         hitRepository.save(hitEntity);
 
-        log.trace("post saved " + hitEntity);
+        log.trace("post saved {}", hitEntity);
         return hitEntity.getId();
     }
 
