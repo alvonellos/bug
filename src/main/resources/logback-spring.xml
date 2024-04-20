@@ -11,7 +11,7 @@
         <neverBlock>true</neverBlock>
     </appender>
 
-    <root level="debug">
+    <root level="error">
         <appender-ref ref="ASYNC GELF" />
     </root>
 
