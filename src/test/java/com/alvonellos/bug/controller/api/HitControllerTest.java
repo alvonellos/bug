@@ -125,7 +125,7 @@ class HitControllerTest {
     void clear() throws Exception {
         log.info("HitControllerTest.clear()");
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/clear"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/clear"))
                 .andExpect(status().isOk());
 
         // Verify that the service's clear method was called
