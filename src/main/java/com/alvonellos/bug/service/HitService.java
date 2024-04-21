@@ -1,5 +1,7 @@
 package com.alvonellos.bug.service;
 
+import com.alvonellos.bug.client.GeoIPClient;
+import com.alvonellos.bug.dto.GeoIPResponse;
 import com.alvonellos.bug.dto.HitDTO;
 import com.alvonellos.bug.repo.HitRepository;
 import com.alvonellos.bug.repo.dao.HitEntity;
@@ -19,6 +21,8 @@ import java.util.*;
 @RequiredArgsConstructor
 public class HitService {
     private final HitRepository hitRepository;
+
+    private final GeoIPClient geoIPClient;
 
     public List<HitDTO> findAll() {
         log.trace("findAll()");
@@ -103,6 +107,39 @@ public class HitService {
         }
 
         log.trace("return hits");
+        return hitmap;
+    }
+
+    public Map<String, GeoIPResponse> getGeoIPHits() {
+        log.trace("getGeoIPHits()");
+
+        final List<String> hitsByDay = hitRepository.findAll()
+                .stream()
+                .map(HitEntity::getIp)
+                .toList();
+
+        final Map<String, GeoIPResponse> m = new HashMap<>(hitsByDay.size());
+
+        hitsByDay.forEach(ip -> m.put(ip, geoIPClient.getIPLookup(ip)));
+
+        return m;
+    }
+
+    public Map<String, Integer> getHitsBySite() {
+        log.trace("getHitsBySite()");
+
+        final List<String> hitsBySite = hitRepository.findAll()
+                .stream()
+                .map(HitEntity::getUrl)
+                .toList();
+
+        final Map<String, Integer> hitmap = new HashMap<>(hitsBySite.size());
+
+        for(String h : hitsBySite) {
+            hitmap.put(h, hitmap.getOrDefault(h, 0)+1);
+        }
+
+
         return hitmap;
     }
 }

@@ -1,6 +1,7 @@
 package com.alvonellos.bug.controller.api;
 
 import com.alvonellos.bug.annotations.ApiPrefixController;
+import com.alvonellos.bug.dto.GeoIPResponse;
 import com.alvonellos.bug.dto.HitDTO;
 import com.alvonellos.bug.service.HitService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,6 +70,26 @@ public class HitController {
         val result = hitService.getHitsByDay();
 
         log.exiting(this.getClass().getName(), "getHitsByDay", result);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "hitsbygeo", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, GeoIPResponse>> getHitsByGeo() {
+        log.entering(this.getClass().getName(), "getHitsByGeo");
+
+        val result = hitService.getGeoIPHits();
+
+        log.exiting(this.getClass().getName(), "getHitsByDay", result);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "hitsbysite", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Integer>> getHitsBySite() {
+        log.entering(this.getClass().getName(), "getHitsBySite");
+
+        val result = hitService.getHitsBySite();
+
+        log.exiting(this.getClass().getName(), "getHitsBySite", result);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
