@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js">
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,8 +15,30 @@
 <div th:if="${bugcount == null}" class="bugcount">
     <p th:text="0"></p>
 </div>
+<div th:if="${bugcount > 100" class="graph">
+    <canvas id="chart" width="400" height="400"></canvas>
+</div>
 <footer>
     <img src="/api/hit/bug.jpg" class="bug" alt="">
 </footer>
 </body>
+<script>
+    const dat = async fetch('https://bug.home.alvonellos.com.json(); /api/hits')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return await response.json(); // or response.text() for plain text response
+        })
+
+    console.log(dat);
+
+
+    const ctx = document.getElementById('chart').getContext('2d');
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: dat,
+    })
+</script>
 </html>
