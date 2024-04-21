@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.security.SecureRandom;
 import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.hibernate.internal.util.NullnessHelper.coalesce;
@@ -57,6 +59,16 @@ public class HitController {
         val result = hitService.findAll();
 
         log.exiting(this.getClass().getName(), "getAll", result);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "hitsbyday", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<LocalDate, Integer>> getHitsByDay() {
+        log.entering(this.getClass().getName(), "getHitsByDay");
+
+        val result = hitService.getHitsByDay();
+
+        log.exiting(this.getClass().getName(), "getHitsByDay", result);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

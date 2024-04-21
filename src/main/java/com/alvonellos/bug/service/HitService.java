@@ -10,8 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -86,5 +87,22 @@ public class HitService {
         hitRepository.deleteAll();
 
         log.trace("clear deleted all hits");
+    }
+
+    public Map<LocalDate, Integer> getHitsByDay() {
+        log.trace("getHitsByDay()");
+
+        final List<HitEntity> hitsByDay = hitRepository.findAll();
+
+        final Map<LocalDate, Integer> hitmap = new HashMap<>(hitsByDay.size());
+
+        for(HitEntity h : hitsByDay) {
+            final LocalDate hitDate = h.getAccessed().toLocalDate();
+
+            hitmap.put(hitDate, hitmap.getOrDefault(hitDate, 0)+1);
+        }
+
+        log.trace("return hits");
+        return hitmap;
     }
 }
