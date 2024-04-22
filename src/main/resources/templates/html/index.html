@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js">
-</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,30 +14,60 @@
 <div th:if="${bugcount == null}" class="bugcount">
     <p th:text="0"></p>
 </div>
-<div th:if="${bugcount > 100" class="graph">
-    <canvas id="chart" width="400" height="400"></canvas>
+<div th:if="${bugcount > 100" class="graph" style="width: 100vw; height: 400px;">
 </div>
 <footer>
     <img src="/api/hit/bug.jpg" class="bug" alt="">
 </footer>
 </body>
 <script>
-    const dat = async fetch('https://bug.home.alvonellos.com.json(); /api/hits')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return await response.json(); // or response.text() for plain text response
-        })
+    const siteObject = [
+        {
+            label: 'Hits by day',
+            url: 'https://bug.home.alvonellos.com/api/hitsbyday',
+        },
+    ];
 
-    console.log(dat);
+    siteObject.forEach( ( site, index ) => {
+        fetch(site.url)
+            .then(response => response.json())
+            .then(data => {
 
+                const canvas = document.createElement('canvas');
+                canvas.id = `chart${index}`;
+                canvas.width = 600;
+                canvas.height = 600;
+                document.body.appendChild(canvas);
 
-    const ctx = document.getElementById('chart').getContext('2d');
-
-    const chart = new Chart(ctx, {
-        type: 'bar',
-        data: dat,
-    })
+                const labels = Object.keys(data);
+                const dataUsed = Object.values(data);
+                const barColors = labels.map((label, index) => {
+                    const color = `rgba(${(index * 100) % 255}, 100, ${(index * 150) % 255}, 0.6)`; // Custom colors for each bar
+                    return color;
+                });
+                let ctx = canvas.getContext('2d');
+                const barChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels ,
+                        datasets: [{
+                            label: site.label,
+                            data: dataUsed ,
+                            backgroundColor: barColors,
+                            borderColor: 'rgba(0,0,0,1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    });
 </script>
 </html>
