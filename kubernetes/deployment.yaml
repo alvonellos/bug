@@ -24,8 +24,8 @@ spec:
           image: alvonellos/bug:$BUILD_NUMBER #The Docker image
           imagePullPolicy: Always
           ports:
-            - containerPort: 8085
-              hostPort: 8085
+            - containerPort: 8004
+              hostPort: 8004
               hostIP: 0.0.0.0
               protocol: "TCP"
           env:
